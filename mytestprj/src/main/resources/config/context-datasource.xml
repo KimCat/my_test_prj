@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- 키 값을 properties 파일에서 관리하도록 propereyConfigurer 설정 -->
+	<bean id="propereyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:/properties/global.properties</value>
+			</list>
+		</property>
+		
+	</bean>
+	
+	<!-- DB 접속정보 -->
+ 	<bean id="dataSourceOrg" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${DB.DRIVERCLASS}"></property>
+		<property name="url" value="${DB.LOCATION}"></property>
+		<property name="username" value="${DB.USERNAME}"></property>
+		<property name="password" value="${DB.PASSWORD}"></property>
+	</bean>
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	   <constructor-arg ref="dataSourceOrg" />
+	   <property name="logFormatter">
+	      <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+	          <property name="loggingType" value="MULTI_LINE" />
+	          <property name="sqlPrefix"   value="------------------ SQL ------------------ \n" />
+	      </bean>
+	    </property>
+	 </bean>
+
+</beans>
